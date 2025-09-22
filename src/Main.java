@@ -1,23 +1,41 @@
-
-
-//quicksort
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public class Main {
+
+    // Generate random points
+    private static Point[] generateRandomPoints(int n, int maxCoord) {
+        Random rand = new Random();
+        Point[] points = new Point[n];
+        for (int i = 0; i < n; i++) {
+            points[i] = new Point(rand.nextInt(maxCoord), rand.nextInt(maxCoord));
+        }
+        return points;
+    }
+
     public static void main(String[] args) {
-        int n = 20; // размер массива
-        Random rnd = new Random();
-        int[] arr = rnd.ints(n, -50, 50).toArray();
+        // Small test for correctness
+        int smallN = 1000;
+        Point[] smallPoints = generateRandomPoints(smallN, 10000);
 
-        System.out.println("Исходный массив: " + Arrays.toString(arr));
+        double fastDist = ClosestPairOfPoints.closestPair(smallPoints);
+        double bruteDist = ClosestPairOfPoints.bruteForce(smallPoints);
 
-        SortMetrics m = new SortMetrics();
-        QuickSort.sort(arr, m);
+        System.out.println("Small test:");
+        System.out.println("Fast algorithm result: " + fastDist);
+        System.out.println("Brute force result: " + bruteDist);
+        System.out.println("Match? " + (Math.abs(fastDist - bruteDist) < 1e-9));
 
-        System.out.println("Отсортированный массив: " + Arrays.toString(arr));
-        System.out.println("Сравнений: " + m.getComparisons());
-        System.out.println("Перестановок: " + m.getSwaps());
-        System.out.println("Макс. глубина рекурсии: " + m.getMaxDepth());
+        // Large test for performance
+        int bigN = 100000;
+        Point[] bigPoints = generateRandomPoints(bigN, 1000000);
+
+        long start = System.currentTimeMillis();
+        double distLarge = ClosestPairOfPoints.closestPair(bigPoints);
+        long end = System.currentTimeMillis();
+
+        System.out.println("\nLarge test:");
+        System.out.println("Fast algorithm result: " + distLarge);
+        System.out.println("Time taken: " + (end - start) + " ms");
     }
 }
+
